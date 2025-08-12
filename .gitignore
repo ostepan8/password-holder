@@ -1,3 +1,5 @@
 passwords.db
 
 .env
+
+*__pycache__/
