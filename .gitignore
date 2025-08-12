@@ -3,3 +3,20 @@ passwords.db
 .env
 
 *__pycache__/
+
+.vscode/
+.DS_Store
+.idea/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+*.sqlite3
+*.db
+*.sqlite
+
+
