@@ -1,0 +1,49 @@
+from model.Encrypter import Encrypter
+import os
+
+
+class PasswordManager:
+    def __init__(self, database):
+        self.database = database
+        if self.database:
+            self.load_passwords()
+        self.passwords = {}
+        self.encryption_key = os.getenv("ENCRYPTION_KEY", "default_key")
+        self.encrypter = Encrypter(self.encryption_key)
+
+    def load_passwords(self):
+        self.database.connect()
+        self.passwords = self.database.get_service_to_password_dict()
+        self.database.disconnect()
+
+    def add_password(self, service, password):
+        self.database.connect()
+        self.database.add_password(service, self.encrypter.encrypt(password))
+        self.passwords[service] = self.encrypter.encrypt(password)
+
+    def get_password(self, service):
+        encrypted_password = self.passwords.get(service, None)
+        if encrypted_password:
+            return self.encrypter.decrypt(encrypted_password)
+        return None
+
+    def remove_password(self, service):
+        self.database.connect()
+        self.database.remove_password(service)
+        self.passwords.pop(service, None)
+        self.database.disconnect()
+
+    def get_passwords(self):
+        return {
+            service: self.encrypter.decrypt(password)
+            for service, password in self.passwords.items()
+        }
+
+    def get_services(self):
+        return list(self.passwords.keys())
+
+    def get_service(self, service):
+        for s in self.passwords.keys():
+            if service == s:
+                return s
+        return None
