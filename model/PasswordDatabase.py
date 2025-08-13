@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 
@@ -7,6 +8,10 @@ class PasswordDatabase:
             raise ValueError("Database name must be provided")
         self.db_name = db_name
         self.create_table()
+        try:
+            os.chmod(self.db_name, 0o600)
+        except FileNotFoundError:
+            pass
         self.connection = None
 
     def connect(self):
