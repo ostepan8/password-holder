@@ -17,7 +17,6 @@ class PasswordManager:
         self.database.disconnect()
 
     def add_password(self, service, password):
-        self.database.connect()
         self.database.add_password(service, self.encrypter.encrypt(password))
         self.passwords[service] = self.encrypter.encrypt(password)
 
@@ -28,10 +27,8 @@ class PasswordManager:
         return None
 
     def remove_password(self, service):
-        self.database.connect()
         self.database.remove_password(service)
         self.passwords.pop(service, None)
-        self.database.disconnect()
 
     def get_passwords(self):
         return {
