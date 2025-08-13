@@ -1,5 +1,6 @@
 from model.Encrypter import Encrypter
 import os
+import getpass
 
 
 class PasswordManager:
@@ -8,7 +9,11 @@ class PasswordManager:
         if self.database:
             self.load_passwords()
         self.passwords = {}
-        self.encryption_key = os.getenv("ENCRYPTION_KEY", "default_key")
+        self.encryption_key = os.environ.get("ENCRYPTION_KEY")
+        if not self.encryption_key:
+            self.encryption_key = getpass.getpass("Enter encryption key: ")
+        if not self.encryption_key:
+            raise RuntimeError("ENCRYPTION_KEY not set")
         self.encrypter = Encrypter(self.encryption_key)
 
     def load_passwords(self):
